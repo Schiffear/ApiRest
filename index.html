@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Ma page web avec MockLab API</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  </head>
+  <body>
+    <header>
+      <nav>
+        <ul>
+          <li><a href="index.html">Accueil</a></li>
+          <li><a href="api.html">Map</a></li>
+        </ul>
+      </nav>
+    </header>
+    <div class="container text-center">
+      <h1 class="titre">Liste d'éléments</h1>
+      <ul id="elements-list" class="list-group">
+      </ul>
+  
+      <h2 class="titre">Détails de l'élément sélectionné</h2>
+      <div id="element-details" class="card">
+        <div class="card-body">
+          <p class="card-text">Aucun élément sélectionné</p>
+        </div>
+      </div>
+    </div>
+  
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+      // Remplacez l'URL par l'URL de votre API MockLab
+      const apiURL = 'https://louisbasnier.mocklab.io';
+  
+      // Récupère la liste d'éléments depuis l'API et affiche-les
+      axios.get(`${apiURL}/elements`)
+        .then(response => {
+          const elements = response.data;
+          const elementsList = document.getElementById('elements-list');
+  
+          console.log(elements);
+          elements.forEach(element => {
+            const li = document.createElement('li');
+            li.classList.add('list-group-item');
+            li.innerHTML = element.nom;
+            li.addEventListener('click', () => {
+              // Récupère les détails de l'élément sélectionné depuis l'API et affiche-les
+              axios.get(`${apiURL}/elements/${element.id}`)
+                .then(response => {
+                  const elementDetails = document.getElementById('element-details');
+                  elementDetails.innerHTML = `
+                    <div class="card-body">
+                      <p class="card-text"><strong>Famille :</strong>
+                        ${element.famille}</p>
+                    <p class="card-text"><strong>Description :</strong> ${element.description}</p>
+                    <p class="card-text"><strong>Prix :</strong> ${element.vh} €</p>
+                    <p class="card-text"><strong>Ville :</strong> ${element.Ville}</p>
+                  </div>
+                `;
+              })
+              .catch(error => {
+                console.error(error);
+                alert('Erreur lors de la récupération des détails de l\'élément.');
+              });
+          });
+  
+          elementsList.appendChild(li);
+        });
+      })
+      .catch(error => {
+        console.error(error);
+        alert('Erreur lors de la récupération de la liste d\'éléments.');
+      });
+    </script>
+  </body>
+</html>

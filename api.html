@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Recherche de ville sur Google Maps</title>
+    <link rel="stylesheet" type="text/css" href="style2.css">
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+      #map {
+        height: 500px;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+        <nav>
+          <ul>
+            <li><a href="index.html">Accueil</a></li>
+            <li><a href="api.html">Map</a></li>
+          </ul>
+        </nav>
+      </header>
+    <h1>Recherche de ville sur Google Maps</h1>
+    <input id="search-input" type="text" placeholder="Entrez une ville">
+    <button id="search-button" type="button">Rechercher</button>
+    <div id="map"></div>
+    <script>
+      function initMap() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 10,
+          center: {lat: 48.8566, lng: 2.3522} // Coordonnées de Paris par défaut
+        });
+        
+        var searchInput = document.getElementById('search-input');
+        var searchButton = document.getElementById('search-button');
+        searchButton.addEventListener('click', function() {
+          var geocoder = new google.maps.Geocoder();
+          geocoder.geocode({'address': searchInput.value}, function(results, status) {
+            if (status === 'OK') {
+              map.setCenter(results[0].geometry.location);
+              var marker = new google.maps.Marker({
+                map: map,
+                position: results[0].geometry.location
+              });
+            } else {
+              alert('Adresse introuvable : ' + status);
+            }
+          });
+        });
+      }
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBN543ZhuosOOOSSWbE9BFKtUyZRWTkszA&callback=initMap&callback=initMap"></script>
+  </body>
+</html>
